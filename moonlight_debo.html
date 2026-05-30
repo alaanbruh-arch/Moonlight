@@ -1,0 +1,432 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💙</title><style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    overflow:hidden;
+    background-color: #0f172a;
+}
+
+#bg{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    z-index:-2;
+    transition:opacity .6s ease;
+}
+
+.overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.25);
+    z-index:-1;
+    transition: background 0.5s ease;
+}
+
+.bg-cats-container {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+}
+
+.bg-cats-container img {
+    flex: 1;
+    height: 90vh;
+    object-fit: cover;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.popup{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:90%;
+    max-width:450px;
+    min-height: 280px;
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(10px);
+    border-radius:22px;
+    padding:25px;
+    text-align:center;
+    box-shadow:0 0 25px rgba(0,0,0,.25);
+    transition: background 0.5s ease;
+}
+
+.pop{
+    animation:popIn .35s ease;
+}
+
+@keyframes popIn{
+    0%{ transform:translate(-50%,-50%) scale(.6); opacity:0; }
+    70%{ transform:translate(-50%,-50%) scale(1.05); }
+    100%{ transform:translate(-50%,-50%) scale(1); opacity:1; }
+}
+
+button{
+    border:none;
+    border-radius:12px;
+    padding:12px 18px;
+    margin:8px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+.yes{
+    background:#3b82f6;
+    color:white;
+    transition: transform 0.15s ease;
+}
+
+.no{
+    background:#ef4444;
+    color:white;
+    z-index: 10;
+}
+
+.small{
+    font-size:14px;
+    opacity:.85;
+}
+
+.progress{
+    font-size:13px;
+    opacity:.7;
+    margin-bottom:10px;
+}
+
+.scene-container {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    margin-top: 15px;
+}
+
+.envelope-wrapper {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 220px;
+    height: 130px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    cursor: pointer;
+    z-index: 5;
+}
+
+.envelope-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 65px 110px 0 110px;
+    border-color: #f8fafc transparent transparent transparent;
+    transform-origin: top;
+    transition: transform 0.4s ease-out;
+    z-index: 6;
+}
+
+.envelope-wrapper::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(30deg, #f1f5f9 49%, transparent 50%),
+                linear-gradient(-30deg, #f1f5f9 49%, transparent 50%);
+    border-radius: 0 0 8px 8px;
+    z-index: 5;
+}
+
+.envelope-wrapper.open::before {
+    transform: rotateX(180deg);
+    z-index: 1;
+}
+
+.letter-paper {
+    position: absolute;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.9);
+    width: 200px;
+    background: #fffefb;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 18px 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    z-index: 2;
+    opacity: 0;
+    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.4s ease;
+    text-align: center;
+}
+
+.envelope-wrapper.open + .letter-paper {
+    opacity: 1;
+    transform: translate(-50%, -125px) scale(1);
+    z-index: 8; 
+}
+
+.paper-content {
+    font-size: 15px;
+    font-weight: bold;
+    color: #334155;
+    line-height: 1.45;
+}
+</style></head><body>
+
+<div id="audio-container" style="display:none;">
+    <audio id="snd_envelope" src="https://www.myinstants.com/media/sounds/vine-boom.mp3" preload="auto"></audio>
+    <audio id="snd_bruh" src="https://www.myinstants.com/media/sounds/movie_1.mp3" preload="auto"></audio>
+    <audio id="snd_wow" src="https://www.myinstants.com/media/sounds/anime-wow-sound-effect.mp3" preload="auto"></audio>
+    <audio id="snd_tacobell" src="https://www.myinstants.com/media/sounds/taco-bell-bong-sfx.mp3" preload="auto"></audio>
+    <audio id="snd_dodge1" src="https://www.myinstants.com/media/sounds/slip.mp3" preload="auto"></audio>
+    <audio id="snd_dodge2" src="https://www.myinstants.com/media/sounds/roblox-death-sound_1.mp3" preload="auto"></audio>
+    <audio id="snd_yippee" src="https://www.myinstants.com/media/sounds/yippee-tbh.mp3" preload="auto"></audio>
+    <audio id="snd_mcdmg" src="https://www.myinstants.com/media/sounds/classic_hurt.mp3" preload="auto"></audio>
+    <audio id="snd_rickroll" src="https://ia800508.us.archive.org/15/items/Rick_Astley_Never_Gonna_Give_You_Up/Rick_Astley_Never_Gonna_Give_You_Up.mp3" preload="auto"></audio>
+</div>
+
+<img id="bg" src="" style="display:none;">
+
+<div class="bg-cats-container" id="catsContainer" style="display:none;">
+    <img src="https://cataas.com/cat?1">
+    <img src="https://cataas.com/cat?2">
+    <img src="https://cataas.com/cat?3">
+</div>
+
+<div class="overlay" id="overlay"></div>
+<div id="popup" class="popup"></div>
+
+<script>
+
+function playSound(soundId) {
+    const audio = document.getElementById('snd_' + soundId);
+    if(audio) {
+        audio.currentTime = 0; 
+        audio.play().catch(e => console.log("Audio play blocked by browser:", e));
+    }
+}
+
+let yesScale = 1;
+
+function animatePopup(){
+    const p=document.getElementById("popup");
+    p.classList.remove("pop");
+    void p.offsetWidth;
+    p.classList.add("pop");
+}
+
+function setBackground(url){
+    document.getElementById("catsContainer").style.display = "none";
+    const bgImg = document.getElementById("bg");
+    bgImg.style.display = "block";
+    bgImg.style.opacity = "0";
+
+    setTimeout(()=>{
+        bgImg.src = url;
+        bgImg.style.opacity = "1";
+    },300);
+}
+
+function showCatGridLayout() {
+    document.getElementById("bg").style.display = "none";
+    const grid = document.getElementById("catsContainer");
+    grid.style.display = "flex";
+}
+
+function letterScreen(){
+    setBackground("https://images.unsplash.com/photo-1605899435973-ca2d1a8861cf?w=1400");
+    document.getElementById("overlay").style.background = "rgba(139, 115, 85, 0.4)";
+    document.getElementById("popup").style.background = "rgba(253, 251, 247, 0.95)";
+
+    document.getElementById("popup").innerHTML = `
+        <h3 style="color:#5c4d3c; margin-bottom:2px; font-size:19px;">You received a letter 📩</h3>
+        <p style="font-size:13px; color:#8c7a65; margin:0;">Click the envelope to pull out the note</p>
+        
+        <div class="scene-container">
+            <div class="envelope-wrapper" onclick="openLetter(this)"></div>
+            <div class="letter-paper">
+                <div class="paper-content">
+                    Hey Debooo yele, consider this as a sorry 😭☝️
+                    <br><br>
+                    <button class="yes" style="font-size:14px; padding:8px 15px; background:#8c7a65;" onclick="screen1()">Continueeee 🤓</button>
+                </div>
+            </div>
+        </div>
+    `;
+    animatePopup();
+}
+
+function openLetter(envelopeElement) {
+    if(!envelopeElement.classList.contains('open')) {
+        playSound('envelope'); 
+        envelopeElement.classList.add('open');
+    }
+}
+
+function screen1(){
+    playSound('bruh'); 
+    document.getElementById("overlay").style.background = "rgba(0,0,0,.25)";
+    document.getElementById("popup").style.background = "rgba(255,255,255,.92)";
+    showCatGridLayout();
+
+    document.getElementById("popup").innerHTML=`
+    <div class="progress">Step 1 / 4 💙</div>
+    <h2>It wasn't intentional ok??? 😭</h2>
+    <p>I wasn't at fault too, Instagram just hates me for some reason 😭</p>
+    <p class="small">🐱 0 cats were harmed during the making of this apology.</p>
+    <button class="yes" onclick="screen2()">Okieee 💙</button>
+    `;
+
+    animatePopup();
+}
+
+function screen2(){
+    playSound('wow'); 
+    setBackground("https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=1400");
+
+    document.getElementById("popup").innerHTML=`
+    <div class="progress">Step 2 / 4 💙</div>
+    <h2>Be honest... on a scale from 😇 to 😤, how annoyed are you?</h2>
+    <div style="margin-top: 20px; min-height: 60px; position: relative;">
+        <button class="yes" onclick="screen3()">😇 Not annoyed</button>
+        <button class="no" id="runaway">😤 Very annoyed</button>
+    </div>
+    `;
+
+    animatePopup();
+    setupRunaway();
+}
+
+function setupRunaway(){
+    const btn=document.getElementById("runaway");
+    const popup=document.getElementById("popup");
+
+    if(!btn || !popup) return;
+
+    function move(){
+        playSound('dodge1'); 
+        yesScale += 0.05;
+        const goodBtn=document.querySelector(".yes");
+        if(goodBtn){
+            goodBtn.style.transform = "scale(" + yesScale + ")";
+        }
+
+        const padding = 15;
+        const maxX = popup.clientWidth - btn.offsetWidth - padding;
+        const maxY = popup.clientHeight - btn.offsetHeight - padding;
+
+        btn.style.position = "absolute";
+        btn.style.left = Math.max(padding, Math.random() * maxX) + "px";
+        btn.style.top = Math.max(padding, Math.random() * maxY) + "px";
+    }
+
+    btn.addEventListener("mouseover", move);
+    btn.addEventListener("touchstart", (e)=>{ e.preventDefault(); move(); });
+    btn.addEventListener("touchmove", (e)=>{ e.preventDefault(); move(); });
+    btn.addEventListener("click", ()=>{ move(); });
+}
+
+function screen3(){
+    playSound('tacobell'); 
+    setBackground("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1400");
+    yesScale = 1;
+
+    document.getElementById("popup").innerHTML=`
+    <div class="progress">Step 3 / 4 💙</div>
+    <h2>Do you know how annoying it is to lose an account and then realize I can't talk to you there anymore? 😭💔</h2>
+    <div style="margin-top: 20px; min-height: 60px; position: relative;">
+        <button class="yes" id="awwBtn" onclick="screen4()">Aww 💙</button>
+        <button class="no" id="skillBtn">Deserved 😤</button>
+    </div>
+    `;
+
+    animatePopup();
+    setupSkillButton();
+}
+
+function setupSkillButton(){
+    const btn=document.getElementById("skillBtn");
+    const popup=document.getElementById("popup");
+
+    if(!btn || !popup) return;
+
+    function move(){
+        playSound('dodge2'); 
+        yesScale += 0.05;
+        const awwBtn = document.getElementById("awwBtn");
+        if(awwBtn) {
+            awwBtn.style.transform = "scale(" + yesScale + ")";
+        }
+
+        const padding = 15;
+        const maxX = popup.clientWidth - btn.offsetWidth - padding;
+        const maxY = popup.clientHeight - btn.offsetHeight - padding;
+
+        btn.style.position="absolute";
+        btn.style.left=Math.max(padding, Math.random()*maxX)+"px";
+        btn.style.top=Math.max(padding, Math.random()*maxY)+"px";
+    }
+
+    btn.addEventListener("mouseover",move);
+    btn.addEventListener("touchstart",(e)=>{ e.preventDefault(); move(); });
+    btn.addEventListener("touchmove",(e)=>{ e.preventDefault(); move(); });
+    btn.addEventListener("click",(e)=>{ e.preventDefault(); move(); });
+}
+
+function screen4(){
+    playSound('yippee'); 
+    document.getElementById("popup").innerHTML=`
+    <div class="progress">Step 4 / 4 💙</div>
+    <h2>Last question... 😎</h2>
+    <p>Are you secretly awesome?</p>
+    <button class="yes" onclick="finalScreen()">Yes I'm 😎</button>
+    <button class="yes" onclick="finalScreen()">Also Yes I'm 😎</button>
+    `;
+
+    animatePopup();
+}
+
+function finalScreen(){
+    playSound('mcdmg'); 
+    playSound('rickroll'); // Instant Rickroll!
+
+    setBackground("https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1400");
+
+    document.getElementById("popup").innerHTML=`
+    <h1>YEYYYY LESSS GOOO 😍😍😘😘😘</h1>
+    <h2>MUAHHHH 💙</h2>
+    <p>Thank you for not being mad 🥺💙</p>
+    <p style="font-size: 18px; font-weight: bold; color: #ef4444; margin-top: 25px;">Ab ID password bata new ID ka chal 😡🔪</p>
+    `;
+
+    animatePopup();
+}
+
+window.onload=letterScreen;
+
+</script></body>
+</html>
